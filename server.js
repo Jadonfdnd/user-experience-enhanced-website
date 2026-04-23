@@ -1,5 +1,79 @@
-console.log('Hier komt je server voor Sprint 10.')
+// import  packages express voor de server en liqjs voor de templates
+import express from 'express'
+import { Liquid } from 'liquidjs'
 
-console.log('Gebruik uit Sprint 9 alleen de code die je mee wilt nemen.')
+//app configureren
 
-console.log('Zet \'m op!')
+// maak nieuwe express applicatie aan
+const app = express()
+
+//formdata lezen via req.body
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public')) //maakt de public map toegankelijk voor de browser
+
+//maak een nieuwe liquid engine aan
+const engine = new Liquid()
+app.engine('liquid', engine.express())
+app.set('views', './views') // vertelt express waar liquid templates staan
+
+//------------------------------GET route nieuwsoverzicht----------------------------------
+app.get('/nieuws', async function (req, res) { //wordt uitgevoerd wanneer iemand naar /nieuws gaat
+    //haal nieuwsartikelen uit directus op: 
+    const newsRes = await fetch ('https://fdnd-agency.directus.app/items/adconnect_news')
+    const newsData = await newsRes.json() //zet respinse om naar JS object
+    res.render('nieuws.liquid', { news: newsData.data}) //rendert de template en geeft de nieuwsdata mee als variable
+})
+
+// -------------------nieuws detail pagina GET--------------------------------
+app.get('/nieuws/:uuid', async function (req, res){ //route parameter
+    const uuid = req.params.uuid //haal uuid uit url
+    //filter juiste artikel op basis van de uuid
+    const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
+    const newsData = await newsRes.json()
+    res.render('nieuws-detail.liquid', {
+        article: newsData.data[0], //pakt eerste artikel ui de array want we filteren op 1 artikel
+        succes: req.query.succes === 'true',// chechkt of er ?succes=true in de url staat na een redirect
+        error: req.query.error === 'true'
+    })
+
+}) 
+
+// --------------post route reactie opslaan----------------------
+//vang form op als user op versturen drukt
+// Sla de reactie op in Directus via een POST request
+// Content-Type: application/json vertelt de server dat we JSON sturen
+app.post('/nieuws/:uuid', async function (req, res){
+    const uuid = req.params.uuid
+    
+    try {
+        await fetch('https://fdnd-agency.directus.app/items/adconnect_news_comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: req.body.name, //inf=gevulde formdata
+            comment: req.body.comment,
+            news: uuid //koppelt de reactie aan het juiste neiuwsartik
+        })
+
+    })
+    res.redirect(303, `/nieuws/${uuid}?succes=true`) //stuurt bezoeker terug naar de detailpagina
+  } catch (error) {
+    res.redirect(303, `/nieuws/${uuid}?error=true`)//if error dan stuuurt terug met ?error=tur
+  } 
+
+})
+
+// -------------404 error things-----------------------
+app.use((req, res) => {
+    res.status(404).render('error.liquid', {
+        statusCode:404,
+        message: "Sorry, we kunnen deze pagina niet vinden!"
+    })
+})
+
+
+// ------------server starten----------
+app.set('port', process.env.PORT || 8000)
+app.listen(app.get('port'), function () {
+  console.log(`Application started on http://localhost:${app.get('port')}`)
+})
