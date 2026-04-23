@@ -1,0 +1,31 @@
+{% render 'partials/head.liquid' %}
+
+<main>
+    <section id="hero-section">
+        <h1>Nieuws</h1>
+        <p>
+            Op deze pagina vind je updates en korte verslagen van georganiseerde evenementen
+        </p>
+    </section>
+
+    <section id="nieuwsoverzicht">
+        <h2>Alle nieuws</h2>
+        <p>Aantal artikelen: {{ news.size }} </p>
+
+        {% comment %} if news artikelen > 0 then for each (newsartikel) een kaart in li {% endcomment %}
+        {% if news.size > 0 %} 
+            <ul class="nieuws-grid">       
+                {%  for article in news  %}
+                    <li class="nieuws-kaart">
+                        <p class="datum">{{ article.date | date:' %d %B %Y' }}</p>
+                        <h3>{{ article.title }}</h3>
+                        <p>{{ article.description }}</p>
+                        <a href="/nieuws/{{ article.uuid }}" class="button-blue">Meer informatie</a>
+                    </li>   
+                {% endfor %}   
+            </ul>     
+        {% else %}    
+            <p>Er zijn nog geen nieuwsartikelen.</p>
+        {%  endif %}    
+    </section>
+</main>
