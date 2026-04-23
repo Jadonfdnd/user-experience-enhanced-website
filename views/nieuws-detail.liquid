@@ -1,0 +1,55 @@
+{% render 'partials/head.liquid', title: article.title | append: ' | Ad Connect' %}
+{% comment %} dynamische titel via article.titel {% endcomment %}
+
+<main>
+    <section id="article-header">
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.author }}</p>
+        <p>{{ article.date | date: '%d %B %Y' }}</p>
+     </section>   
+
+    <div id="article-body">
+        {{  article.body }}
+    </div>
+
+  <section id="reacties">
+    <h2>Reacties</h2>
+    {% if article.comments.size > 0 %}
+      <ul class="reacties-lijst">
+        {% for comment in article.comments %}
+          <li class="reactie">
+            <strong>{{ comment.name }}</strong>
+            <p>{{ comment.comment }}</p>
+            <p class="datum">{{ comment.date_created | date: '%d %B %Y' }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Wees de eerste die reageert!</p>
+    {% endif %}
+  </section>
+
+    <section id="reactie-plaatsen">
+    {% if succes %}
+      <p class="success-melding"> Je reactie is geplaatst!</p>
+    {% endif %}
+
+    {% if error %}
+      <p class="error-melding"> Er ging iets fout, probeer het opnieuw.</p>
+    {% endif %} 
+    {% comment %} image of icon? {% endcomment %}
+
+    <h2>Laat een reactie achter</h2>
+    <form action="/nieuws/{{ article.uuid }}" method="POST">
+      <label for="name">Naam</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="comment">Reactie</label>
+      <textarea id="comment" name="comment" rows="4" required placeholder="Schrijf hier je reactie..."></textarea>
+
+      <button class="button-blue" type="submit">Verstuur reactie</button>
+    </form>
+  </section>
+</main>
+
+{% render 'partials/foot.liquid' %}
