@@ -1,0 +1,72 @@
+/* ---------------- NIEUWS HERO ----------------------*/
+
+#hero-section {
+  background: var(--merk-700);
+  padding: 3rem 1rem;
+  color: #fff;
+}
+
+#hero-section h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+/* -------NIEUWS OVERZICHT ----------- */
+
+#nieuwsoverzicht {
+  padding: 3rem 1rem;
+}
+
+.nieuws-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .nieuws-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .nieuws-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.nieuws-kaart {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nieuws-kaart .datum {
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.nieuws-kaart h3 {
+  color: var(--merk-800);
+  font-size: 1.2rem;
+}
+
+.nieuws-kaart .button-blue {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+
+.nieuws-kaart {
+    transition: transform 220ms ease, border-color 220ms ease;
+}
+
+.nieuws-kaart:hover {
+    transform: translateY(-4px);
+    border-color: var(--merk-500);
+}
