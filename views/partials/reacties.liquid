@@ -1,0 +1,35 @@
+<section id="reacties" data-enhanced="reactie-formulier">
+  <h2>Reacties</h2>
+  {% if article.comments.size > 0 %}
+    <ul class="reacties-lijst">
+      {% for comment in article.comments %}
+        <li class="reactie">
+          <strong>{{ comment.name }}</strong>
+          <p>{{ comment.comment }}</p>
+          <p class="datum">{{ comment.date_created | date: '%d %B %Y' }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Wees de eerste die reageert!</p>
+  {% endif %}
+
+  {% if succes %}
+    <p class="success-melding">Je reactie is geplaatst!</p>
+  {% endif %}
+
+  {% if error %}
+    <p class="error-melding">Er ging iets fout, probeer het opnieuw.</p>
+  {% endif %}
+
+  <h2>Laat een reactie achter</h2>
+  <form action="/nieuws/{{ article.uuid }}" method="POST" data-enhanced="reactie-formulier">
+    <label for="name">Naam</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="comment">Reactie</label>
+    <textarea id="comment" name="comment" rows="4" required placeholder="Schrijf hier je reactie..."></textarea>
+
+    <button class="button-blue" type="submit">Verstuur reactie</button>
+  </form>
+</section>

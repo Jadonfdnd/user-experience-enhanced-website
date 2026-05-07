@@ -16,7 +16,8 @@ const engine = new Liquid()
 app.engine('liquid', engine.express())
 app.set('views', './views') // vertelt express waar liquid templates staan
 
-
+// base url opt
+const baseURL = 'https://fdnd-agency.directus.app'
 //------------------------------GET route nieuwsoverzicht----------------------------------
 app.get('/nieuws', async function (req, res) { //wordt uitgevoerd wanneer iemand naar /nieuws gaat
     //haal nieuwsartikelen uit directus op: 
@@ -26,32 +27,30 @@ app.get('/nieuws', async function (req, res) { //wordt uitgevoerd wanneer iemand
 })
 
 // -------------------nieuws detail pagina GET--------------------------------
-app.get('/nieuws/:uuid', async function (req, res){ //route parameter
-    const uuid = req.params.uuid //haal uuid uit url
-    //filter juiste artikel op basis van de uuid
-    const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
-    const newsData = await newsRes.json()
-    console.log(newsData)
-    res.render('nieuws-detail.liquid', {
-
-        article: newsData.data[0], //pakt eerste artikel ui de array want we filteren op 1 artikel
-        succes: req.query.succes === 'true',// chechkt of er ?succes=true in de url staat na een redirect
-        error: req.query.error === 'true'
-    })
+// app.get('/nieuws/:uuid', async function (req, res){ //route parameter
+//     const uuid = req.params.uuid //haal uuid uit url
+//     //filter juiste artikel op basis van de uuid
+//     const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
+//     const newsData = await newsRes.json()
+//     res.render('nieuws-detail.liquid', {
+//         article: newsData.data[0], //pakt eerste artikel ui de array want we filteren op 1 artikel
+//         succes: req.query.succes === 'true',// chechkt of er ?succes=true in de url staat na een redirect
+//         error: req.query.error === 'true'
+//     })
 
 
-}) 
+// }) 
 
 //maak nieuwe slug aan
-// app.get('/nieuws-detail/slug', async function (request, response) {
-//     //haal alle news artikelen uit directus op
-//     const artikelResponse = await fetch('https://fdnd-agency.directus.app/items/adconnect_news?filter[slug]='+ request.params.slug)
+app.get('/nieuws-detail/slug', async function (request, response) {
+    //haal alle news artikelen uit directus op
+    const artikelResponse = await fetch('https://fdnd-agency.directus.app/items/adconnect_news?filter[slug]='+ request.params.slug)
 
-//     //HAAAL JSON ERUIT
-//     const artikelResponseJSON = await artikelResponse.JSON()
-//     response.render('nieuws-detail.liquid', { 
-//         nieuws: artikelResponseJSON.data[0] })
-// })  
+    //HAAAL JSON ERUIT
+    const artikelResponseJSON = await artikelResponse.JSON()
+    response.render('nieuws-detail.liquid', { 
+        nieuws: artikelResponseJSON.data[0] })
+})  
 
 
 // --------------post route reactie opslaan----------------------
@@ -60,8 +59,6 @@ app.get('/nieuws/:uuid', async function (req, res){ //route parameter
 // Content-Type: application/json vertelt de server dat we JSON sturen
 app.post('/nieuws/:uuid', async function (req, res){
     const uuid = req.params.uuid
-    //enhancement var' checkt als enhanced in url staat
-    const enhanced = req.query.enhanced || ''
     
     try {
         await fetch('https://fdnd-agency.directus.app/items/adconnect_news_comments', {
@@ -74,34 +71,11 @@ app.post('/nieuws/:uuid', async function (req, res){
         })
 
     })
-
-    //nieuwe comments ophalen na posten 
-    const newsRes = await fetch (`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
-    const newsData = await newsRes.json()
-
-    if (enhanced) {
-        //render dan alleen partial voor JS fetch
-        res.render('partials/reacties.liquid', {
-            article: newsData.data[0],
-            succes: true,
-            error: false
-        })
-    } else {
-        //normal redirect 
-        res.redirect(303, `/nieuws/${uuid}?succes=true`)
-    }
-
+    res.redirect(303, `/nieuws/${uuid}?succes=true`) //stuurt bezoeker terug naar de detailpagina
   } catch (error) {
-    if (enhanced) {
-      res.render('partials/reacties.liquid', {
-        article: newsData.data[0],
-        succes: false,
-        error: true
-      })
-    } else {
-      res.redirect(303, `/nieuws/${uuid}?error=true`)
-    }
-  }
+    res.redirect(303, `/nieuws/${uuid}?error=true`)//if error dan stuuurt terug met ?error=tur
+  } 
+
 })
 
 // -------------404 error things-----------------------

@@ -56,40 +56,37 @@
 }
 
 /* REACTIES plaatsen-------------------------------------------- */
-#reactie-plaatsen {
-  padding: 2rem 1rem;
+#reacties form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
   border-top: 1px solid #eee;
-
-  h2 {
-  margin-bottom: 1.5rem;
-  }
-
-
- form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 500px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  label {
-    font-weight: 600;
-  }
-
-  button{
-    transition: transform 220ms ease, border-color 220ms ease;
-  }
-  button:hover{
-    transform: translateY(-4px);
-  }
-  
 }
 
-#reactie-plaatsen input,
-#reactie-plaatsen textarea {
+#reacties h2:last-of-type {
+  margin-bottom: 1.5rem;
+}
+
+#reacties label {
+  font-weight: 600;
+}
+
+#reacties button {
+  transition: transform 220ms ease, border-color 220ms ease;
+  align-self: flex-start;
+}
+
+#reacties button:hover {
+  transform: translateY(-4px);
+}
+
+#reacties input,
+#reacties textarea {
   width: 90%;
   padding: 1rem;
   border: 1px solid #ddd;
@@ -120,9 +117,8 @@
 
 /* Hocus pocus use some FOCUS!!! */
 
-#reactie-plaatsen input:focus,
- #reactie-plaatsen textarea:focus {
-    outline: none;
-    border-color: var(--merk-500);
+#reacties input:focus,
+#reacties textarea:focus {
+  outline: none;
+  border-color: var(--merk-500);
 }
-
