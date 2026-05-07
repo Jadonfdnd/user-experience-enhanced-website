@@ -18,103 +18,87 @@ app.set('views', './views') // vertelt express waar liquid templates staan
 
 
 //------------------------------GET route nieuwsoverzicht----------------------------------
-app.get('/nieuws', async function (req, res) { //wordt uitgevoerd wanneer iemand naar /nieuws gaat
-    //haal nieuwsartikelen uit directus op: 
-    const newsRes = await fetch ('https://fdnd-agency.directus.app/items/adconnect_news')
-    const newsData = await newsRes.json() //zet respinse om naar JS object
-    res.render('nieuws.liquid', { news: newsData.data}) //rendert de template en geeft de nieuwsdata mee als variable
+app.get('/nieuws', async function (req, res) {
+    //haal nieuwsartikelen uit directus op inclusief hero afbeelding afmetingen
+    const newsRes = await fetch('https://fdnd-agency.directus.app/items/adconnect_news?fields=*,hero.*')
+    const newsData = await newsRes.json()
+    res.render('nieuws.liquid', { news: newsData.data })
 })
 
 // -------------------nieuws detail pagina GET--------------------------------
-app.get('/nieuws/:uuid', async function (req, res){ //route parameter
-    const uuid = req.params.uuid //haal uuid uit url
-    //filter juiste artikel op basis van de uuid
-    const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
+app.get('/nieuws/:uuid', async function (req, res) {
+    const uuid = req.params.uuid
+    // filter juiste artikel op basis van de uuid, inclusief hero afmetingen en comments
+    const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*,hero.*`)
     const newsData = await newsRes.json()
-    console.log(newsData)
     res.render('nieuws-detail.liquid', {
-
-        article: newsData.data[0], //pakt eerste artikel ui de array want we filteren op 1 artikel
-        succes: req.query.succes === 'true',// chechkt of er ?succes=true in de url staat na een redirect
+        article: newsData.data[0],
+        succes: req.query.succes === 'true',
         error: req.query.error === 'true'
     })
-
-
-}) 
-
-//maak nieuwe slug aan
-// app.get('/nieuws-detail/slug', async function (request, response) {
-//     //haal alle news artikelen uit directus op
-//     const artikelResponse = await fetch('https://fdnd-agency.directus.app/items/adconnect_news?filter[slug]='+ request.params.slug)
-
-//     //HAAAL JSON ERUIT
-//     const artikelResponseJSON = await artikelResponse.JSON()
-//     response.render('nieuws-detail.liquid', { 
-//         nieuws: artikelResponseJSON.data[0] })
-// })  
-
-
-// --------------post route reactie opslaan----------------------
-//vang form op als user op versturen drukt
-// Sla de reactie op in Directus via een POST request
-// Content-Type: application/json vertelt de server dat we JSON sturen
-app.post('/nieuws/:uuid', async function (req, res){
-    const uuid = req.params.uuid
-    //enhancement var' checkt als enhanced in url staat
-    const enhanced = req.query.enhanced || ''
-    
-    try {
-        await fetch('https://fdnd-agency.directus.app/items/adconnect_news_comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            name: req.body.name, //inf=gevulde formdata
-            comment: req.body.comment,
-            news: uuid //koppelt de reactie aan het juiste neiuwsartik
-        })
-
-    })
-
-    //nieuwe comments ophalen na posten 
-    const newsRes = await fetch (`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*`)
-    const newsData = await newsRes.json()
-
-    if (enhanced) {
-        //render dan alleen partial voor JS fetch
-        res.render('partials/reacties.liquid', {
-            article: newsData.data[0],
-            succes: true,
-            error: false
-        })
-    } else {
-        //normal redirect 
-        res.redirect(303, `/nieuws/${uuid}?succes=true`)
-    }
-
-  } catch (error) {
-    if (enhanced) {
-      res.render('partials/reacties.liquid', {
-        article: newsData.data[0],
-        succes: false,
-        error: true
-      })
-    } else {
-      res.redirect(303, `/nieuws/${uuid}?error=true`)
-    }
-  }
 })
 
-// -------------404 error things-----------------------
+// --------------post route reactie opslaan----------------------
+// Sla de reactie op in Directus via een POST request
+// Content-Type: application/json vertelt de server dat we JSON sturen
+app.post('/nieuws/:uuid', async function (req, res) {
+    const uuid = req.params.uuid
+    // enhancement var checkt als enhanced in url staat
+    const enhanced = req.query.enhanced || ''
+
+    try {
+        await fetch('https://fdnd-agency.directus.app/items/adconnect_news_comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: req.body.name,
+                comment: req.body.comment,
+                news: uuid
+            })
+        })
+
+        // nieuwe comments ophalen na posten inclusief hero afmetingen
+        const newsRes = await fetch(`https://fdnd-agency.directus.app/items/adconnect_news?filter[uuid][_eq]=${uuid}&fields=*,comments.*,hero.*`)
+        const newsData = await newsRes.json()
+
+        if (enhanced) {
+            // render alleen partial voor JS fetch
+            res.render('partials/reacties.liquid', {
+                article: newsData.data[0],
+                succes: true,
+                error: false
+            })
+        } else {
+            // normale redirect
+            res.redirect(303, `/nieuws/${uuid}?succes=true`)
+        }
+
+    } catch (error) {
+        if (enhanced) {
+            res.render('partials/reacties.liquid', {
+                article: newsData.data[0],
+                succes: false,
+                error: true
+            })
+        } else {
+            res.redirect(303, `/nieuws/${uuid}?error=true`)
+        }
+    }
+})
+
+// -------------404 error-----------------------
+// moet altijd als laatste staan
 app.use((req, res) => {
     res.status(404).render('error.liquid', {
-        statusCode:404,
+        statusCode: 404,
         message: "Sorry, we kunnen deze pagina niet vinden!"
     })
 })
 
-
 // ------------server starten----------
+// process.env.PORT is voor als de app gehost wordt
+// || 8000 is de fallback voor lokaal ontwikkelen
 app.set('port', process.env.PORT || 8000)
 app.listen(app.get('port'), function () {
-  console.log(`Application started on http://localhost:${app.get('port')}`)
+    console.log(`Application started on http://localhost:${app.get('port')}`)
 })

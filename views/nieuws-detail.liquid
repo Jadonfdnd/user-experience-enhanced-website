@@ -3,10 +3,24 @@
 
 <main>
     <section id="article-header">
-        <h1>{{ article.title }}</h1>
-        <p>{{ article.author }}</p>
-        <p>{{ article.date | date: '%d %B %Y' }}</p>
-    </section>   
+        <div class="article-header-tekst">
+            <h1>{{ article.title }}</h1>
+            <p>{{ article.author }}</p>
+            <p>{{ article.date | date: '%d %B %Y' }}</p>
+        </div>
+        {% if article.hero %}
+        <picture>
+            <source type="image/avif" srcset="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?format=avif&width=1200">
+            <source type="image/webp" srcset="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?format=webp&width=1200">
+            <img 
+                src="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?width=1200" 
+                alt="{{ article.title }}"
+                width="{{ article.hero.width }}"
+                height="{{ article.hero.height }}"
+                loading="eager">
+        </picture>
+        {% endif %}
+    </section>  
 
     <div id="article-body">
         {{ article.body | raw }}

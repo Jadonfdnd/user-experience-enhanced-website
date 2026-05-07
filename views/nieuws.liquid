@@ -18,6 +18,18 @@
             <ul class="nieuws-grid">       
                 {%  for article in news  %}
                     <li class="nieuws-kaart">
+                        {% if article.hero %}
+                        <picture>
+                            <source type="image/avif" srcset="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?format=avif&width=800">
+                            <source type="image/webp" srcset="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?format=webp&width=800">
+                            <img 
+                                src="https://fdnd-agency.directus.app/assets/{{ article.hero.id }}?width=800" 
+                                alt="{{ article.title }}"
+                                width="{{ article.hero.width }}"
+                                height="{{ article.hero.height }}"
+                                loading="lazy">
+                        </picture>
+                        {% endif %}
                         <p class="datum">{{ article.date | date:' %d %B %Y' }}</p>
                         <h3>{{ article.title }}</h3>
                         <p>{{ article.description }}</p>
