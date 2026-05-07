@@ -157,3 +157,19 @@
   outline: none;
   border-color: var(--merk-500);
 }
+
+
+.button-delete {
+  background: transparent;
+  border: 1px solid #b91c1c;
+  color: #b91c1c;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.button-delete:hover {
+  background: #fde8e8;
+}

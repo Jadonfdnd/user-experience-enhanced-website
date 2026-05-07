@@ -7,6 +7,10 @@
           <strong>{{ comment.name }}</strong>
           <p>{{ comment.comment }}</p>
           <p class="datum">{{ comment.date_created | date: '%d %B %Y' }}</p>
+          {% comment %} delete knop voor admin {% endcomment %}
+          <form action="/nieuws/{{ article.uuid }}/reactie/{{ comment.id }}/verwijder" method="POST">
+            <button class="button-delete" type="submit">Verwijderen</button>
+          </form>
         </li>
       {% endfor %}
     </ul>

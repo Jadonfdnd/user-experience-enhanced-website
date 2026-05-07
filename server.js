@@ -86,6 +86,20 @@ app.post('/nieuws/:uuid', async function (req, res) {
     }
 })
 
+
+// ------------ DELETE COMMENT-----------
+app.post('/nieuws/:uuid/reactie/:id/verwijder', async function (req, res) {
+  const uuid = req.params.uuid
+  const id = req.params.id
+
+  await fetch(`https://fdnd-agency.directus.app/items/adconnect_news_comments/${id}`, {
+    method: 'DELETE'
+  })
+
+  res.redirect(303, `/nieuws/${uuid}`)
+})
+
+
 // -------------404 error-----------------------
 // moet altijd als laatste staan
 app.use((req, res) => {
@@ -102,3 +116,5 @@ app.set('port', process.env.PORT || 8000)
 app.listen(app.get('port'), function () {
     console.log(`Application started on http://localhost:${app.get('port')}`)
 })
+
+
