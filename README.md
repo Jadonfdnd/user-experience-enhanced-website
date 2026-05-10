@@ -21,7 +21,7 @@ Ontwerp en maak een interactieve website die snel laadt en prettig te gebruiken 
 
 Dit project is een nieuwspagina voor het Overlegplatform Ad's. Bezoekers kunnen nieuwsartikelen lezen en reacties achterlaten op een artikel. De website is gebouwd met Progressive Enhancement en de website werkt voor iedereen, op elk apparaat, in elke browser.
 
-🌐 Live website: [link toevoegen]
+ Live website: https://user-experience-enhanced-website-b19g.onrender.com/nieuws
 
 screenshot!!!
 
