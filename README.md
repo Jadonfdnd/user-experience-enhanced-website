@@ -23,7 +23,15 @@ Dit project is een nieuwspagina voor het Overlegplatform Ad's. Bezoekers kunnen 
 
  Live website: https://user-experience-enhanced-website-b19g.onrender.com/nieuws
 
-screenshot!!!
+
+<img width="1896" height="924" alt="image" src="https://github.com/user-attachments/assets/0ad4420b-19f7-422b-b36b-0316ab049b23" />
+
+
+
+
+https://github.com/user-attachments/assets/a7a97c55-73c1-4d4f-a7e1-1942f286204a
+
+
 
 ## Gebruik
 
@@ -43,18 +51,25 @@ De interactie werkt als volgt:
 4. Reactie wordt opgeslagen in Directus
 5. Bezoeker ziet de nieuwe reactie direct zonder pagina reload
 
-UI statess screenshots.........
+UI states:
+<img width="699" height="870" alt="image" src="https://github.com/user-attachments/assets/2891d191-7d2e-4ddd-b5d3-f0c697e02764" />
+
+
+https://github.com/user-attachments/assets/da320050-d2ae-4f2c-b6ab-c0a98d229dd0
+
+
+
 
 ## Kenmerken
 
 ### Technieken
 
 Deze website is gebouwd met:
-- **NodeJS** — server-side JavaScript runtime
-- **Express** — web framework voor de routes en server
-- **Liquid** — templating engine voor de HTML pagina's
-- **Directus** — REST API voor het ophalen en opslaan van data
-- **Client-side JavaScript** — enhancement voor het formulier
+- **NodeJS** - server-side JavaScript runtime
+- **Express** - web framework voor de routes en server
+- **Liquid** - templating engine voor de HTML pagina's
+- **Directus** - REST API voor het ophalen en opslaan van data
+- **Client-side JavaScript** - enhancement voor het formulier
 
 ### Progressive Enhancement
 
